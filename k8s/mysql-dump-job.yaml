@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-import-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: mysql-import
+          image: mysql:8.1
+          command: ["sh", "-c", "mysql -h mysql -uroot -p123456 myapp < /sql/sql_dump.sql"]
+          volumeMounts:
+            - name: sql-volume
+              mountPath: /sql
+      restartPolicy: OnFailure
+      volumes:
+        - name: sql-volume
+          configMap:
+            name: sql-dump
